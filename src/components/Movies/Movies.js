@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 function Movies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  useEffect(() => {
-    if (searchTerm === '') {
-      setSearchResults([]);
-      return;
-    }
-
-    fetchMovies();
-  }, [searchTerm]);
-
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     try {
       const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=6259da9bc5df5d51756d5e5542429946&query=${searchTerm}`);
       if (!response.ok) {
@@ -25,7 +16,16 @@ function Movies() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setSearchResults([]);
+      return;
+    }
+
+    fetchMovies();
+  }, [searchTerm, fetchMovies]);
 
   return (
     <div>

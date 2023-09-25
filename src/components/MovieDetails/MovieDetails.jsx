@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import Cast from '../Cast/Cast';
 import Reviews from '../Reviews/Reviews';
+import styles from './MovieDatails.module.css';
 
 function MovieDetails() {
   const { movieId } = useParams();
@@ -10,11 +11,7 @@ function MovieDetails() {
   const [showReviews, setShowReviews] = useState(false);
   const [posterUrl, setPosterUrl] = useState('');
 
-  useEffect(() => {
-    fetchMovieDetails();
-  }, [movieId]);
-
-  const fetchMovieDetails = async () => {
+  const fetchMovieDetails = useCallback(async () => {
     try {
       const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=6259da9bc5df5d51756d5e5542429946`);
       if (!response.ok) {
@@ -29,7 +26,7 @@ function MovieDetails() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [movieId]);
 
   const toggleCast = () => {
     setShowCast(!showCast);
@@ -41,18 +38,26 @@ function MovieDetails() {
     setShowCast(false);
   };
 
+  useEffect(() => {
+    fetchMovieDetails();
+  }, [movieId, fetchMovieDetails]);
+
   return (
-    <div>
-      <h2>Movie Details</h2>
-      {posterUrl && <img src={posterUrl} width="150px" alt={`${movieDetails.title} Poster`} />}
-      <h3>Title: {movieDetails.title}</h3>
-      <p>Release Date: {movieDetails.release_date}</p>
-      <p>Overview: {movieDetails.overview}</p>
+    <div className={styles.movieDetailsContainer}>
+      <div className={styles.boxContainer}>
+        {posterUrl && <img src={posterUrl} width="150px" alt={`${movieDetails.title} Poster`} className={styles.posterContainer} />}
+        <div className={styles.contentContainer}>
+          <h2>Movie Details</h2>
+          <h3>Title: {movieDetails.title}</h3>
+          <p>Release Date: {movieDetails.release_date}</p>
+          <p>Overview: {movieDetails.overview}</p>
+        </div>
+      </div>
 
-      
-
-      <button onClick={toggleCast}>Toggle Cast</button>
-      <button onClick={toggleReviews}>Toggle Reviews</button>
+      <div className={styles.buttonsContainer}>
+        <button onClick={toggleCast}>Toggle Cast</button>
+        <button onClick={toggleReviews}>Toggle Reviews</button>
+      </div>
 
       {showCast && <Cast />}
       {showReviews && <Reviews />}
