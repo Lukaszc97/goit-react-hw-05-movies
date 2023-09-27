@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 import Header from './Header/Header'; 
 import Home from './Home/Home';
-import Movies from './Movies/Movies';
-import MovieDetails from './MovieDetails/MovieDetails';
-import Cast from './Cast/Cast';
-import Reviews from './Reviews/Reviews';
+
+const Movies = React.lazy(() => import('./Movies/Movies'));
+const MovieDetails = React.lazy(() => import('./MovieDetails/MovieDetails'));
+const Cast = React.lazy(() => import('./Cast/Cast'));
+const Reviews = React.lazy(() => import('./Reviews/Reviews'));
 
 function App() {
   return (

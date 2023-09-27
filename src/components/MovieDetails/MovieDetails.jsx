@@ -42,6 +42,10 @@ function MovieDetails() {
     fetchMovieDetails();
   }, [movieId, fetchMovieDetails]);
 
+  if (!movieDetails || Object.keys(movieDetails).length === 0) {
+    return <div>Film nie istnieje.</div>;
+  }
+
   return (
     <div className={styles.movieDetailsContainer}>
       <div className={styles.boxContainer}>
