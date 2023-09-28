@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
+import PropTypes from 'prop-types';
 function Cast() {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
@@ -33,5 +33,7 @@ function Cast() {
     </div>
   );
 }
-
+Cast.propTypes = {
+  movieId: PropTypes.string.isRequired,
+};
 export default Cast;

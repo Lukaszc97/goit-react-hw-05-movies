@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-
+import PropTypes from 'prop-types';
 function Reviews() {
   const { movieId } = useParams();
   const [reviews, setReviews] = useState([]);
@@ -36,5 +36,7 @@ function Reviews() {
     </div>
   );
 }
-
+Reviews.propTypes = {
+  movieId: PropTypes.string.isRequired, 
+};
 export default Reviews;

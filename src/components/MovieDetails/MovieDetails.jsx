@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Cast from '../Cast/Cast';
 import Reviews from '../Reviews/Reviews';
 import styles from './MovieDatails.module.css';
-
+import PropTypes from 'prop-types';
 function MovieDetails() {
   const { movieId } = useParams();
   const [movieDetails, setMovieDetails] = useState({});
@@ -67,6 +67,7 @@ function MovieDetails() {
       {showReviews && <Reviews />}
     </div>
   );
-}
-
+}MovieDetails.propTypes = {
+  movieId: PropTypes.string.isRequired, 
+};
 export default MovieDetails;
