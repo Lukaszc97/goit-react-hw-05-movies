@@ -2,10 +2,10 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import Header from './Header/Header'; 
-import Home from './Home/Home';
+import Home from '../Page/Home/Home';
 
-const Movies = React.lazy(() => import('./Movies/Movies'));
-const MovieDetails = React.lazy(() => import('./MovieDetails/MovieDetails'));
+const Movies = React.lazy(() => import('../Page/Movies/Movies'));
+const MovieDetails = React.lazy(() => import('../Page/MovieDetails/MovieDetails'));
 const Cast = React.lazy(() => import('./Cast/Cast'));
 const Reviews = React.lazy(() => import('./Reviews/Reviews'));
 

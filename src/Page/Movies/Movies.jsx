@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { searchMovies } from '../../Service/api'; 
 
 function Movies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [lastSearchTerm, setLastSearchTerm] = useState('');
 
-  const fetchMovies = useCallback(async () => {
+  const searchMoviesData = useCallback(async () => {
     try {
-      const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=6259da9bc5df5d51756d5e5542429946&query=${searchTerm}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setSearchResults(data.results);
+      const movieData = await searchMovies(searchTerm);
+      setSearchResults(movieData);
+      setLastSearchTerm(searchTerm);
     } catch (error) {
       console.error(error);
     }
@@ -24,8 +23,13 @@ function Movies() {
       return;
     }
 
-    fetchMovies();
-  }, [searchTerm, fetchMovies]);
+    searchMoviesData();
+  }, [searchTerm, searchMoviesData]);
+
+
+  useEffect(() => {
+    setSearchTerm(lastSearchTerm);
+  }, [lastSearchTerm]);
 
   return (
     <div>

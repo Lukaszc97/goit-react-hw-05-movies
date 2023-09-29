@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { fetchMovieCast } from '../../Service/api'; 
+
 function Cast() {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
 
   useEffect(() => {
-    const fetchMovieCast = async () => {
+    const getCast = async () => {
       try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=6259da9bc5df5d51756d5e5542429946`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setCast(data.cast);
+        const castData = await fetchMovieCast(movieId);
+        setCast(castData);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchMovieCast();
+    getCast();
   }, [movieId]);
 
   return (
@@ -33,7 +31,9 @@ function Cast() {
     </div>
   );
 }
+
 Cast.propTypes = {
   movieId: PropTypes.string.isRequired,
 };
+
 export default Cast;

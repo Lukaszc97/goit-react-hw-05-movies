@@ -1,32 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import Cast from '../Cast/Cast';
-import Reviews from '../Reviews/Reviews';
+import { useParams, Link, useLocation} from 'react-router-dom';
+import Cast from '../../components/Cast/Cast';
+import Reviews from '../../components/Reviews/Reviews';
 import styles from './MovieDatails.module.css';
 import PropTypes from 'prop-types';
+import { fetchMovieDetails } from '../../Service/api';
+
 function MovieDetails() {
   const { movieId } = useParams();
   const [movieDetails, setMovieDetails] = useState({});
   const [showCast, setShowCast] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
   const [posterUrl, setPosterUrl] = useState('');
+  const location = useLocation();
 
-  const fetchMovieDetails = useCallback(async () => {
-    try {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=6259da9bc5df5d51756d5e5542429946`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setMovieDetails(data);
 
-      if (data.poster_path) {
-        setPosterUrl(`https://image.tmdb.org/t/p/w500${data.poster_path}`);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [movieId]);
+  const backLinkHref = location.state?.from ?? "/movies";
 
   const toggleCast = () => {
     setShowCast(!showCast);
@@ -38,9 +27,22 @@ function MovieDetails() {
     setShowCast(false);
   };
 
+  const fetchMovieDetailsData = useCallback(async () => {
+    try {
+      const data = await fetchMovieDetails(movieId); 
+      setMovieDetails(data);
+
+      if (data.poster_path) {
+        setPosterUrl(`https://image.tmdb.org/t/p/w500${data.poster_path}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [movieId]);
+
   useEffect(() => {
-    fetchMovieDetails();
-  }, [movieId, fetchMovieDetails]);
+    fetchMovieDetailsData();
+  }, [movieId, fetchMovieDetailsData]);
 
   if (!movieDetails || Object.keys(movieDetails).length === 0) {
     return <div>Film nie istnieje.</div>;
@@ -48,6 +50,9 @@ function MovieDetails() {
 
   return (
     <div className={styles.movieDetailsContainer}>
+  
+      <Link to={backLinkHref}>BACK</Link>
+      
       <div className={styles.boxContainer}>
         {posterUrl && <img src={posterUrl} width="150px" alt={`${movieDetails.title} Poster`} className={styles.posterContainer} />}
         <div className={styles.contentContainer}>
@@ -67,7 +72,10 @@ function MovieDetails() {
       {showReviews && <Reviews />}
     </div>
   );
-}MovieDetails.propTypes = {
-  movieId: PropTypes.string.isRequired, 
+}
+
+MovieDetails.propTypes = {
+  movieId: PropTypes.string.isRequired,
 };
+
 export default MovieDetails;
