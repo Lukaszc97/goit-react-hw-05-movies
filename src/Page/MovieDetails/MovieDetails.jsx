@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useLocation} from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Cast from '../../components/Cast/Cast';
 import Reviews from '../../components/Reviews/Reviews';
 import styles from './MovieDetails.module.css';
@@ -12,10 +12,11 @@ function MovieDetails() {
   const [showCast, setShowCast] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
   const [posterUrl, setPosterUrl] = useState('');
+  const navigate = useNavigate(); 
   const location = useLocation();
 
 
-  const backLinkHref = location.state?.from ?? "/movies";
+  const searchQuery = new URLSearchParams(location.search).get('query');
 
   const toggleCast = () => {
     setShowCast(!showCast);
@@ -29,7 +30,7 @@ function MovieDetails() {
 
   const fetchMovieDetailsData = useCallback(async () => {
     try {
-      const data = await fetchMovieDetails(movieId); 
+      const data = await fetchMovieDetails(movieId);
       setMovieDetails(data);
 
       if (data.poster_path) {
@@ -44,17 +45,31 @@ function MovieDetails() {
     fetchMovieDetailsData();
   }, [movieId, fetchMovieDetailsData]);
 
+  const goBack = () => {
+
+    sessionStorage.setItem('lastSearchQuery', searchQuery);
+
+   
+    navigate(-1);
+  };
+
   if (!movieDetails || Object.keys(movieDetails).length === 0) {
     return <div>Film nie istnieje.</div>;
   }
 
   return (
     <div className={styles.movieDetailsContainer}>
-  
-      <Link to={backLinkHref}>BACK</Link>
-      
+      <button onClick={goBack}>BACK</button>
+
       <div className={styles.boxContainer}>
-        {posterUrl && <img src={posterUrl} width="150px" alt={`${movieDetails.title} Poster`} className={styles.posterContainer} />}
+        {posterUrl && (
+          <img
+            src={posterUrl}
+            width="150px"
+            alt={`${movieDetails.title} Poster`}
+            className={styles.posterContainer}
+          />
+        )}
         <div className={styles.contentContainer}>
           <h2>Movie Details</h2>
           <h3>Title: {movieDetails.title}</h3>

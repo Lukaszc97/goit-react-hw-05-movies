@@ -7,14 +7,19 @@ function Movies() {
   const [searchResults, setSearchResults] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const searchMoviesData = useCallback(async () => {
+  const searchMoviesData = useCallback(async (term) => {
     try {
-      const movieData = await searchMovies(searchTerm);
-      setSearchResults(movieData);
+      if (term) {
+        const movieData = await searchMovies(term);
+        setSearchResults(movieData);
+      } else {
+       
+        setSearchResults([]);
+      }
     } catch (error) {
       console.error(error);
     }
-  }, [searchTerm]);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -22,20 +27,27 @@ function Movies() {
 
     if (query) {
       setSearchTerm(query);
+      searchMoviesData(query);
     }
-  }, [searchParams]);
+  }, [searchParams, searchMoviesData]);
+
+  useEffect(() => {
+
+    searchMoviesData(searchTerm);
+  }, [searchMoviesData, searchTerm]);
 
   const handleSearchClick = () => {
     const params = new URLSearchParams();
     params.set('query', searchTerm);
     setSearchParams(params);
-    searchMoviesData();
   };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      searchMoviesData();
+      handleSearchClick(); 
     }
   };
+
   return (
     <div>
       <h2>Search Movies</h2>
@@ -43,7 +55,8 @@ function Movies() {
         type="text"
         placeholder="Search for movies..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}onKeyDown={handleKeyDown}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button onClick={handleSearchClick}>Search</button>
       <ul>
