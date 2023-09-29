@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation} from 'react-router-dom';
 import Cast from '../../components/Cast/Cast';
 import Reviews from '../../components/Reviews/Reviews';
-import styles from './MovieDatails.module.css';
+import styles from './MovieDetails.module.css';
 import PropTypes from 'prop-types';
 import { fetchMovieDetails } from '../../Service/api';
 
