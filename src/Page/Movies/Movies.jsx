@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { searchMovies } from '../../Service/api';
 
+
 function Movies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -13,7 +14,6 @@ function Movies() {
         const movieData = await searchMovies(term);
         setSearchResults(movieData);
       } else {
-       
         setSearchResults([]);
       }
     } catch (error) {
@@ -27,19 +27,15 @@ function Movies() {
 
     if (query) {
       setSearchTerm(query);
-      searchMoviesData(query);
     }
-  }, [searchParams, searchMoviesData]);
-
-  useEffect(() => {
-
-    searchMoviesData(searchTerm);
-  }, [searchMoviesData, searchTerm]);
+  }, [searchParams]);
 
   const handleSearchClick = () => {
     const params = new URLSearchParams();
     params.set('query', searchTerm);
     setSearchParams(params);
+
+    searchMoviesData(searchTerm);
   };
 
   const handleKeyDown = (e) => {

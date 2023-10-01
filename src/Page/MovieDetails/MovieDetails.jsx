@@ -49,7 +49,7 @@ function MovieDetails() {
 
     sessionStorage.setItem('lastSearchQuery', searchQuery);
 
-   
+
     navigate(-1);
   };
 
@@ -59,7 +59,7 @@ function MovieDetails() {
 
   return (
     <div className={styles.movieDetailsContainer}>
-      <button onClick={goBack}>BACK</button>
+      <button style={{ width: '50px' }} onClick={goBack} >BACK</button>
 
       <div className={styles.boxContainer}>
         {posterUrl && (
