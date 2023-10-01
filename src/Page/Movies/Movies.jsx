@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { searchMovies } from '../../Service/api';
 
-
 function Movies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const initQuery = searchParams.get('query');
+  const [query, setQuery] = useState(initQuery);
 
   const searchMoviesData = useCallback(async (term) => {
     try {
@@ -23,10 +24,10 @@ function Movies() {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    const query = params.get('query');
+    const queryParam = params.get('query');
 
-    if (query) {
-      setSearchTerm(query);
+    if (queryParam) {
+      setQuery(queryParam);
     }
   }, [searchParams]);
 
@@ -34,13 +35,19 @@ function Movies() {
     const params = new URLSearchParams();
     params.set('query', searchTerm);
     setSearchParams(params);
-
-    searchMoviesData(searchTerm);
+    setQuery(searchTerm);
   };
+  useEffect(() => {
+    setSearchTerm(initQuery || '');
+  }, [initQuery]);
+  
+  useEffect(() => {
+    searchMoviesData(query);
+  }, [searchMoviesData, query]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleSearchClick(); 
+      handleSearchClick();
     }
   };
 
